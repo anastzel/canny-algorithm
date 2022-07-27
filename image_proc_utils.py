@@ -72,8 +72,8 @@ def calc_dir(filtered_x: np.array, filtered_y: np.array) -> np.array:
 
     for i in range(height):
         for j in range(width):
-            theta[i,j] = math.atan2(filtered_y[i,j], filtered_x[i,j])
-            theta[i,j] = theta[i,j] * 180 / math.pi
+            theta[i, j] = math.atan2(filtered_y[i, j], filtered_x[i, j])
+            theta[i, j] = theta[i, j] * 180 / math.pi
 
     return theta
 
@@ -82,8 +82,8 @@ def pos_dir(theta: np.array) -> np.array:
 
     for i in range(theta.shape[0]):
         for j in range(theta.shape[1]):
-            if theta[i,j] < 0:
-                theta[i,j] = 360 + theta[i,j]
+            if theta[i, j] < 0:
+                theta[i, j] = 360 + theta[i, j]
     
     return theta
 
@@ -94,14 +94,14 @@ def adjust_dir_nearest(theta: np.array) -> np.array:
 
     for i in range(theta.shape[0]):
         for j in range(theta.shape[1]):
-            if (theta[i,j] >= 0) and (theta[i,j] < 22.5) or (theta[i,j] >= 157.5) and (theta[i,j] < 202.5) or (theta[i,j] >= 337.5) and (theta[i,j] <= 360):
-                theta_adj[i,j] = 0
-            elif (theta[i,j] >= 22.5) and (theta[i,j] < 67.5) or (theta[i,j] >= 202.5) and (theta[i,j] < 247.5):
+            if (theta[i, j] >= 0) and (theta[i, j] < 22.5) or (theta[i, j] >= 157.5) and (theta[i, j] < 202.5) or (theta[i, j] >= 337.5) and (theta[i, j] <= 360):
+                theta_adj[i, j] = 0
+            elif (theta[i, j] >= 22.5) and (theta[i, j] < 67.5) or (theta[i, j] >= 202.5) and (theta[i, j] < 247.5):
                 theta_adj[i,j] = 45
-            elif (theta[i,j] >= 67.5) and (theta[i,j] < 112.5) or (theta[i,j] >= 247.5) and (theta[i,j] < 292.5):
-                theta_adj[i,j] = 90
-            elif (theta[i,j] >= 112.5) and (theta[i,j] < 157.5) or (theta[i,j] >= 292.5) and (theta[i,j] < 337.5):
-                theta_adj[i,j] = 135
+            elif (theta[i, j] >= 67.5) and (theta[i, j] < 112.5) or (theta[i, j] >= 247.5) and (theta[i, j] < 292.5):
+                theta_adj[i, j] = 90
+            elif (theta[i, j] >= 112.5) and (theta[i, j] < 157.5) or (theta[i, j] >= 292.5) and (theta[i, j] < 337.5):
+                theta_adj[i, j] = 135
 
     return theta_adj
 
@@ -120,14 +120,14 @@ def non_max_supr(magnitude: np.array, theta: np.array) -> np.array:
 
     for i in range(1, magnitude.shape[0]-1):
         for j in range(1, magnitude.shape[1]-1):
-                if theta[i,j] == 0:
-                    BW[i,j] = magnitude[i,j] == max([magnitude[i,j], magnitude[i,j+1], magnitude[i,j-1]])
-                elif theta[i,j] == 45:
-                    BW[i,j] = magnitude[i,j] == max([magnitude[i,j], magnitude[i+1,j+1], magnitude[i-1,j-1]])
-                elif theta[i,j] == 90:
-                    BW[i,j] = magnitude[i,j] == max([magnitude[i,j], magnitude[i+1,j], magnitude[i-1,j]])
-                elif theta[i,j] == 135:
-                    BW[i,j] = magnitude[i,j] == max([magnitude[i,j], magnitude[i+1,j-1], magnitude[i-1,j+1]])
+                if theta[i, j] == 0:
+                    BW[i, j] = magnitude[i, j] == max([magnitude[i, j], magnitude[i, j+1], magnitude[i, j-1]])
+                elif theta[i, j] == 45:
+                    BW[i, j] = magnitude[i, j] == max([magnitude[i, j], magnitude[i+1, j+1], magnitude[i-1, j-1]])
+                elif theta[i, j] == 90:
+                    BW[i, j] = magnitude[i, j] == max([magnitude[i, j], magnitude[i+1, j], magnitude[i-1, j]])
+                elif theta[i, j] == 135:
+                    BW[i, j] = magnitude[i, j] == max([magnitude[i, j], magnitude[i+1, j-1], magnitude[i-1, j+1]])
 
     return BW
 
@@ -143,9 +143,9 @@ def hysterisis_thresh(BW: np.array, t_low: int, t_high: int) -> np.array:
 
     for i in range(height-1):
         for j in range(width-1):
-           t_res[i,j] = 1 if ((BW[i+1,j]   > t_high or BW[i-1,j]    > t_high or 
-                              BW[i,j+1]    > t_high or BW[i,j-1]    > t_high or 
-                              BW[i-1, j-1] > t_high or BW[i-1, j+1] > t_high or
-                              BW[i+1,j+1]  > t_high or BW[i+1,j-1]  > t_high) or BW[i,j] > t_high) else 0
+           t_res[i, j] = 1 if ((BW[i+1, j]   > t_high or BW[i-1, j]   > t_high or 
+                                BW[i, j+1]   > t_high or BW[i, j-1]   > t_high or 
+                                BW[i-1, j-1] > t_high or BW[i-1, j+1] > t_high or
+                                BW[i+1, j+1] > t_high or BW[i+1, j-1] > t_high) or BW[i, j] > t_high) else 0
 
     return t_res
