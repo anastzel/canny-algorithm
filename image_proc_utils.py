@@ -1,6 +1,5 @@
 # Image Processing Utility Functions
 
-from turtle import width
 import numpy as np
 import math
 
@@ -26,7 +25,7 @@ def calculate_target_size(img_size: int, kernel_size: int) -> int:
         added = i + kernel_size
         # It must be lower than the image size
         # Increment if so
-        num_pixels += 1 if added <= img_size else num_pixels
+        num_pixels = num_pixels + 1 if added <= img_size else num_pixels
             
     return num_pixels
 
